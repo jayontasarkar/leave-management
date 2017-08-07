@@ -14,13 +14,13 @@
         <tbody>
             	@foreach(config('leave.type') as $key => $value)
                 <tr>
-                    <td>{{ entobn($value) }} ({{ entobn(config("leave.leaves." . $key)) }})</td>
+                    <td>{{ entobn($value) }} ({{ entobn($total = config("leave.leaves." . $key)) }})</td>
                     <td>{{ entobn(count($leaves) ? $leaves->where('type_id', $key)->count() : 0) }}</td>
                     <td>{{ entobn(count($leaves) ? $leaves->where('type_id', $key)->where('status', 1)->count() : 0) }}</td>
                     <td>{{ entobn(count($leaves) ? $leaves->where('type_id', $key)->where('status', 2)->count() : 0) }}</td>
                     <td>{{ entobn($applied  = count($leaves) ? $leaves->where('type_id', $key)->sum('no_of_days') : 0) }}</td>
                     <td>{{ entobn($approved = count($leaves) ? $leaves->where('type_id', $key)->where('status', 2)->sum('no_of_days') : 0) }}</td>
-                    <td>{{ entobn($applied - $approved) }}</td>
+                    <td>{{ entobn($total - $approved) }}</td>
                 </tr>
                 @endforeach
         </tbody>

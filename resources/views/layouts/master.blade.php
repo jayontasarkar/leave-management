@@ -8,7 +8,7 @@
     
     <link href="{{ asset('css/theme.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" />
-
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -38,11 +38,13 @@
     </div><!-- ./wrapper -->
 
     <script src="{{ asset('js/theme.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     @yield('script')
 
     <script type="text/javascript">
     $(document).ready(function() {
         $('.alert').delay(9000).fadeOut(1000);
+        $('select').select2();
     });
     </script>
 </body>

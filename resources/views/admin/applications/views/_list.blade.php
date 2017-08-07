@@ -14,7 +14,7 @@
         <tbody>
             	@foreach($leaves as $leave)
                 <tr>
-                    <td> <a href="{{ url('profile/applications') }}"> {{ $leave->user->name }}</a></td>
+                    <td> <a href="{{ url('employee/'.$leave->user->id.'/leaves') }}"> {{ $leave->user->name }}</a></td>
                 	<td>{{ $leave->reason}}</td>
                     <td>{{ entobn($leave->start_date->format('M d, Y')) }}</td>
                     <td>{{ entobn($leave->end_date->format('M d, Y')) }}</td>

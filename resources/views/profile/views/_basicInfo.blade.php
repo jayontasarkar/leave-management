@@ -22,14 +22,12 @@
 		</div>
 	    <div class="row-fluid">
 	    	<div class="col-xs-12" style="font-size:18px;border-bottom: 1px solid #DDD;margin-bottom: 10px;padding-bottom: 10px;">
-				<a id="employeeProfileEditInfo" class="btn btn-small btn-success" onclick="modJs.editEmployee();" style="margin-right:10px;"
+				<a class="btn btn-small btn-success" style="margin-right:10px;"
 					href="{{ url('profile/edit') }}" 
 				>
 					<i class="fa fa-edit"></i> তথ্য পরিবর্তন
 				</a>
-				<button id="employeeUploadProfileImage" 
-					onclick="showUploadDialog('profile_image_1','Upload Profile Image','profile_image',1,'profile_image_1','src','url','image');return false;" 
-					class="btn btn-small btn-primary" type="button" style="margin-right:10px;"
+				<button class="btn btn-small btn-primary" type="button" style="margin-right:10px;"
 				>
 					<i class="fa fa-upload"></i> ছবি আপলোড
 				</button>
