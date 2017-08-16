@@ -2,19 +2,20 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Database\Eloquent\Model;
+use App\Traits\Eloquents\AuthorizationTrait;
 
 class Role extends Model
 {
-    use NodeTrait;
+    use NodeTrait, AuthorizationTrait;
     /**
      * Fields that can be mass assigned.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'name_bn', 'slug'
+        'name', 'text', 'slug'
     ];
 
     /**
@@ -22,8 +23,11 @@ class Role extends Model
      *
      * @return void
      */
-    public function setSlugAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['slug'] = str_slug($value);
+        $this->attributes['name'] = $value;
+        if (! $this->exists) {
+            $this->attributes['slug'] = str_slug($value);
+        }
     }
 }

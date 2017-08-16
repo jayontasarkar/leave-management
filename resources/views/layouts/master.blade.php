@@ -5,10 +5,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-    
+
     <link href="{{ asset('css/theme.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+    @yield('style')
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -24,7 +25,7 @@
         @include('layouts.partials.sidebar')
 
         <!-- Right side column. Contains the navbar and content of the page -->
-        <aside class="right-side">                
+        <aside class="right-side">
             <!-- Content Header (Page header) -->
             @yield('title')
 
@@ -32,20 +33,21 @@
             <section class="content">
                 @include('layouts.common.flash')
                 @yield('content')
-    
+
             </section><!-- /.content -->
         </aside><!-- /.right-side -->
     </div><!-- ./wrapper -->
 
     <script src="{{ asset('js/theme.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.alert').delay(9000).fadeOut(1000);
+            $('select').select2();
+        });
+    </script>
+
     @yield('script')
 
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('.alert').delay(9000).fadeOut(1000);
-        $('select').select2();
-    });
-    </script>
 </body>
 </html>

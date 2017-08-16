@@ -8,13 +8,16 @@ mix.styles([
 	'public/AdminLTE/css/font-awesome.min.css',
 	'public/AdminLTE/css/ionicons.min.css',
 	'public/AdminLTE/css/datatables/dataTables.bootstrap.css',
-	'public/AdminLTE/css/AdminLTE.css'
+	'public/AdminLTE/css/AdminLTE.css',
+	'public/AdminLTE/easyui/css/easyui.css',
+	'public/AdminLTE/easyui/css/icon.css'
 ], 'public/css/theme.css');
 
 mix.scripts([
 	'public/AdminLTE/js/jquery-2.0.2.min.js',
 	'public/AdminLTE/js/plugins/jquery-ui/jquery-ui.js',
 	'public/AdminLTE/js/bootstrap.min.js',
+	'public/AdminLTE/js/plugins/slimScroll/jquery.slimscroll.js',
 	'public/AdminLTE/js/plugins/fullcalendar/fullcalendar.min.js',
 	'public/AdminLTE/js/plugins/datatables/jquery.dataTables.js',
 	'public/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js',

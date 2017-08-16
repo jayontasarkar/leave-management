@@ -1,14 +1,37 @@
 <?php
 
+use App\Role;
+
+Route::get('/authorizers', function () {
+    $roles = Role::with('authorizers')->find(14);
+
+    return $roles->ancestors;
+});
+Route::get('/test', function () {
+    $test = Role::get()->toTree();
+
+    return view('test', compact('test'));
+});
+
+Route::get('/role', function () {
+    $roles = Role::get()->toTree();
+    // $role = Role::find(9);
+    // return Role::create([
+    //     'name' => 'Role 5 SubRole 1',
+    //     'name_bn' => 'Role 5 SubRole 1 Bn'
+    // ], $role);
+    return view('roles', compact('roles'));
+});
+
 Route::get('/', function () {
     return redirect('login');
 });
 
 // Auth Routes
-Route::group(['namespace' => 'Auth'], function() {
-	Route::get('/login', 'LoginController@showLoginForm')->name('login');
-	Route::post('/login', 'LoginController@login')->name('login');
-	Route::post('/logout', 'LoginController@logout')->name('logout');
+Route::group(['namespace' => 'Auth'], function () {
+    Route::get('/login', 'LoginController@showLoginForm')->name('login');
+    Route::post('/login', 'LoginController@login')->name('login');
+    Route::post('/logout', 'LoginController@logout')->name('logout');
 });
 
 // Logged In User Profile
@@ -32,16 +55,16 @@ Route::get('/apply', 'ApplyController@create');
 Route::post('/apply', 'ApplyController@store');
 
 // Restrict for Admin Only
-Route::group(['namespace' => 'Admin', 'middleware' => ['auth']], function() {
-	Route::resource('/user-management', 'UserManagementController');
-	Route::resource('/settings/leave', 'LeaveManagementController');
-	Route::resource('admin/leaves', 'EmployeeLeaveController');
-	Route::get('employee/{user}/leaves', 'EmployeeProfileController@show');
-	Route::get('employee/{user}/reports', 'EmployeeProfileController@report');
-	Route::post('admin/applications/approval/{application}', 'LeaveApprovalController@update');
+Route::group(['namespace' => 'Admin', 'middleware' => ['auth']], function () {
+    Route::resource('/user-management', 'UserManagementController');
+    Route::resource('/settings/leave', 'LeaveManagementController');
+    Route::resource('admin/leaves', 'EmployeeLeaveController');
+    Route::get('employee/{user}/leaves', 'EmployeeProfileController@show');
+    Route::get('employee/{user}/reports', 'EmployeeProfileController@report');
+    Route::post('admin/applications/approval/{application}', 'LeaveApprovalController@update');
 });
 
-Route::group(['namespace' => 'Applicant'], function() {
+Route::group(['namespace' => 'Applicant'], function () {
     Route::resource('applications', 'ApplicationsController');
 });
 
