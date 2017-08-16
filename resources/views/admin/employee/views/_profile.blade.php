@@ -16,11 +16,11 @@
 				<p>
 					<i class="fa fa-phone"></i> <span id="mobile_phone">{{ $user->mobile }}</span>&nbsp;&nbsp;
 					<i class="fa fa-envelope"></i> <span id="work_email">
-						{{ $user->designation . ', ' . $user->div_br_off }}
+						{{ $user->role->text . ', ' . $user->div_br_off }}
 					</span>
 				</p>
 			</div>
-		</div>	
+		</div>
     </div>
     <div class="col-xs-12 col-md-2">
 		<div class="row-fluid">

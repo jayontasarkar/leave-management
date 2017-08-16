@@ -17,8 +17,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'fa_hu_name', 'mother_name', 'profile_pic',
-        'signature', 'mobile', 'role', 'password',
-        'active', 'gender', 'join_date', 'div_br_off', 'designation'
+        'signature', 'mobile', 'role_id', 'password',
+        'active', 'gender', 'join_date', 'div_br_off'
     ];
 
     protected $dates = [
@@ -65,5 +65,15 @@ class User extends Authenticatable
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    /**
+     * User belongs to Role.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

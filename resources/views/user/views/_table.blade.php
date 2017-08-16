@@ -15,13 +15,13 @@
             	@foreach($users as $user)
                 <tr>
                 	<td>
-                		<img src="{{ asset($user->avatar()) }}" alt="{{ $user->name }}" 
-                			class="img-circle" height="40" width="40" 
+                		<img src="{{ asset($user->avatar()) }}" alt="{{ $user->name }}"
+                			class="img-circle" height="40" width="40"
                 		>
                 	</td>
                         <td>{{ $user->name}}</td>
                     <td> {{$user->mobile}}</td>
-                    <td>{{$user->designation}}</td>
+                    <td>{{$user->role->text}}</td>
                     <td>{{$user->div_br_off}}</td>
                     <td>
                     	@if($user->active)
@@ -44,7 +44,7 @@
                             'id' => $user->id,
                             'url' => 'user-management/'
                         ])
-                    </td> 
+                    </td>
                 </tr>
                 @endforeach
         </tbody>

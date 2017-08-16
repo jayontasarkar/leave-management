@@ -1,6 +1,19 @@
-<form class="form" method="POST" action="{{ url('user-management') }}" style="margin-top: 25px;"> 
+<form class="form" method="POST" action="{{ url('user-management') }}" style="margin-top: 25px;">
 	{{ csrf_field() }}
 	<div class="row clearfix">
+        <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
+            <div class="col-md-2 col-md-offset-1 text-right">
+                <label for="cc">ব্যবহারকারীর পদবি<small style="color: red; font-size: 1.2em;">*</small></label>
+            </div>
+            <div class="col-md-5">
+                <input id="cc" name="role_id" value="{{ old('role_id') ? : '' }}" class="easyui-combotree" style="width:100%;height:34px;" required>
+            </div>
+            <div class="col-md-4">
+                @include('layouts.common.formError', ['key' => 'role_id'])
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix" style="margin-top: 20px;">
 		<div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
 			<div class="col-md-2 col-md-offset-1 text-right">
             	<label for="name">ব্যবহারকারীর নাম<small style="color: red; font-size: 1.2em;">*</small></label>
@@ -79,19 +92,6 @@
             </div>
             <div class="col-md-4">
             	@include('layouts.common.formError', ['key' => 'div_br_off'])
-            </div>
-        </div>
-	</div>
-	<div class="row clearfix" style="margin-top: 20px;">
-		<div class="form-group{{ $errors->has('designation') ? ' has-error' : '' }}">
-			<div class="col-md-2 col-md-offset-1 text-right">
-            	<label for="designation">ব্যবহারকারীর পদবী<small style="color: red; font-size: 1.2em;">*</small></label>
-			</div>
-            <div class="col-md-5">
-            	<input name="designation" type="text" class="form-control" id="designation" value="{{ old('designation') }}">
-            </div>
-            <div class="col-md-4">
-            	@include('layouts.common.formError', ['key' => 'designation'])
             </div>
         </div>
 	</div>

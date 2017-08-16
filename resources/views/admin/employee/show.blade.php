@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @include('layouts.common.title', [
-	'title' => "কর্মকর্তার নাম :  " . $user->name, 
+	'title' => "কর্মকর্তার নাম :  " . $user->name,
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -65,13 +65,13 @@
 						</div>
 					</div>
 				</div>
-				@if($leaves->count())
+				@if(count($leaves = $user->applications))
 					@include('profile.leaves.views._applications')
 	            @else
 					<h3 class="text-center">কোনো রেজাল্ট খুঁজে পাওয়া যায় নি</h3>
 	            @endif
-			</div>   		
+			</div>
 		</div>
 	</div>
 </div>
-@stop	
+@stop

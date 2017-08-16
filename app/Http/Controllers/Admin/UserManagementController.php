@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserManagementFormRequest;
 use App\User;
 
-
 class UserManagementController extends Controller
 {
     /**
@@ -17,8 +16,8 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->get();
-         
+        $users = User::latest()->with('role')->get();
+
         return view('user.index', compact('users'));
     }
 
@@ -30,7 +29,7 @@ class UserManagementController extends Controller
     public function create()
     {
         $users = User::latest()->get();
-        return view('user.index', compact('users'));    
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -53,8 +52,8 @@ class UserManagementController extends Controller
      */
     public function show($id)
     {
-         $user = User::find($id);
-         return view('user.show', compact('user'));
+        $user = User::with('role')->find($id);
+        return view('admin.employee.show', compact('user'));
     }
 
     /**
@@ -65,7 +64,7 @@ class UserManagementController extends Controller
      */
     public function edit(User $user_management)
     {
-         return view('user.edit', ['user' => $user_management]);
+        return view('user.edit', ['user' => $user_management]);
     }
 
     /**

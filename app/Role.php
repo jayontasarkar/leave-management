@@ -30,4 +30,14 @@ class Role extends Model
             $this->attributes['slug'] = str_slug($value);
         }
     }
+
+    /**
+     * Role has many Users.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

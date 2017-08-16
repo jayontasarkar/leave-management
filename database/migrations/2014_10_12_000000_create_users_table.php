@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('profile_pic', 100)->nullable();
             $table->string('signature', 100)->nullable();
             $table->string('mobile', 50)->unique();
-            $table->integer('role')->default(1);
+            $table->integer('role_id')->unsigned()->default(1);
             $table->string('password', 100);
             $table->boolean('active')->default(true);
             $table->string('gender', 20)->default('male');

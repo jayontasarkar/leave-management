@@ -1,9 +1,11 @@
+@inject('roles', 'App\Http\Services\RolesService')
+
 @extends('layouts.master')
 @php
 	$title = Request::is('user-management') ? 'সকল এডমিন ব্যবহারকারীর তালিকা' : 'নতুন ব্যবহারকারী যুক্ত করুন';
 @endphp
 @include('layouts.common.title', [
-	'title' => "ইউজার ম্যানেজমেন্ট | " . $title, 
+	'title' => "ইউজার ম্যানেজমেন্ট | " . $title,
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -17,7 +19,7 @@
 	        <li class="{{ Request::is('user-management/create') ? 'active' : '' }}">
 	        	<a id="tabEmployee" href="{{ url('user-management/create') }}">নতুন ব্যবহারকারী</a>
 	        </li>
-		</ul> 
+		</ul>
 		<div class="tab-content rendering-content">
 			<div class="tab-pane{{ Request::is('user-management') ? 'active' : '' }}" id="tabPageEmployee">
 				@if($users->count())
@@ -28,23 +30,31 @@
 			</div>
 			<div class="tab-pane{{ Request::is('user-management/create') ? 'active' : '' }}" id="tabNewEmployee">
 				@include('user.views._new')
-			</div>    		
+			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 @stop
 
 @section('script')
-@if(count($users))
+@if( Request::is('user-management') &&  count($users))
     @include('layouts.common.dt-search')
+@else
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+	<script src="{{ asset('AdminLTE/easyui/js/easyui.min.js') }}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.datepicker').datepicker({
+				changeMonth: true,
+	            changeYear: true,
+	            yearRange: "{{ \Carbon\Carbon::now()->subYears(90)->format('Y') . ':' . \Carbon\Carbon::now()->format('Y') }}"
+			});
+			$('.easyui-combotree').combotree({
+				data: {!! json_encode($roles->get()) !!},
+				onlyLeafCheck: false
+			});
+		});
+	</script>
 @endif
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.datepicker').datepicker({
-			changeMonth: true,
-            changeYear: true,
-            yearRange: "{{ \Carbon\Carbon::now()->subYears(90)->format('Y') . ':' . \Carbon\Carbon::now()->format('Y') }}"
-		});		
-	});
-</script>
 @stop
