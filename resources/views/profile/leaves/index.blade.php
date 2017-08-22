@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @include('layouts.common.title', [
-	'title' => "ব্যবহারকারীর সকল ছুটির আবেদনপত্রের তালিকা", 
+	'title' => "ব্যবহারকারীর সকল ছুটির আবেদনপত্রের তালিকা",
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -15,7 +15,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<a href="{{ url('profile/leave') }}" class="btn btn-primary btn-sm">
-								<i class="fa fa-plus"></i>&nbsp;অনুমোদনপ্রাপ্ত সকল ছুটির তালিকা
+								<i class="fa fa-plus"></i>&nbsp;ছুটি এবং আবেদনপত্রের রিপোর্ট
 							</a>
 						</div>
 						<div class="col-md-8 text-right">
@@ -64,9 +64,9 @@
 					<h3 class="text-center">কোনো রেজাল্ট খুঁজে পাওয়া যায় নি</h3>
 	            @endif
 
-			</div>   		
+			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 @stop
 
@@ -77,7 +77,7 @@
 		        $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
 		        $(this).find(":select").filter(function(){ return !this.value; }).attr("disabled", "disabled");
 		        return true;
-		    });	
+		    });
 		});
 	</script>
 @endsection

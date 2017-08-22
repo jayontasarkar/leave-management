@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Application extends Model
 {
     protected $fillable = [
-    	'user_id', 'type_id', 'reason', 'no_of_days', 'start_date', 
-    	'end_date', 'vacation_address', 'additional_reason'
+        'user_id', 'type_id', 'reason', 'no_of_days', 'start_date',
+        'end_date', 'vacation_address', 'authorizer_id'
     ];
 
     /**
      * Cast dates into Carbon Object
-     * 
+     *
      * @var [type]
      */
     protected $dates = [
-    	'start_date', 'end_date'
+        'start_date', 'end_date'
     ];
 
     public function scopeFilter($query, $filters)
@@ -28,7 +28,7 @@ class Application extends Model
 
     /**
      * Vacation Starting Date Mutator
-     * 
+     *
      * @param [type]
      */
     public function setStartDateAttribute($value)
@@ -38,7 +38,7 @@ class Application extends Model
 
     /**
      * Vacation Ending Date Mutator
-     * 
+     *
      * @param [type]
      */
     public function setEndDateAttribute($value)
@@ -48,6 +48,6 @@ class Application extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::Class);
+        return $this->belongsTo(User::class);
     }
 }

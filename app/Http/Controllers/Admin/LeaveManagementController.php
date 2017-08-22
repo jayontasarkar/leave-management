@@ -12,17 +12,18 @@ class LeaveManagementController extends Controller
 {
     public function index(Request $request, LeaveFilter $filters)
     {
-        if($request->has('year'))
-    	   $leaves = Leave::filter($filters)->orderBy('from_date')->get();
-        else
-    	   $leaves = Leave::where('year', date('Y'))->orderBy('from_date')->get();
+        if ($request->has('year')) {
+            $leaves = Leave::filter($filters)->orderBy('from_date')->get();
+        } else {
+            $leaves = Leave::where('year', date('Y'))->orderBy('from_date')->get();
+        }
 
-    	return view('settings.leave.index', compact('leaves'));
+        return view('settings.leave.index', compact('leaves'));
     }
 
     public function create()
     {
-    	return view('settings.leave.create');
+        return view('settings.leave.create');
     }
 
     public function store(LeaveManagementFormRequest $request)
@@ -51,6 +52,6 @@ class LeaveManagementController extends Controller
         $leave->delete();
 
         return redirect('settings/leave')
-            ->withSuccess('ছুটির তথ্য ডিলিট করা হয়েছে |');        
+            ->withSuccess('ছুটির তথ্য ডিলিট করা হয়েছে |');
     }
 }

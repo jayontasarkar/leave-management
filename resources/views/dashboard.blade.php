@@ -5,6 +5,7 @@
 @include('layouts.common.title', ['title' => 'প্রথম পাতা / ড্যাশবোর্ড', 'link' => 'Dashboard'])
 
 @section('content')
+@if($user->type == 'admin')
 <div class="row">
     <div class="col-sm-3 col-xs-12">
 	    <div class="small-box bg-aqua">
@@ -70,7 +71,9 @@
 	        </a>
 	    </div>
 	</div>
-</div>	
+</div>
+@endif
+
 <div class="row" style="margin-top: 20px;">
 	<div class="col-md-12">
 		<h3 class="text-center text-green" style="margin-bottom: 20px;">
@@ -107,6 +110,6 @@
             droppable: false,
             borderColor: '#ff0000'
         });
-    });    
-</script>    
+    });
+</script>
 @stop

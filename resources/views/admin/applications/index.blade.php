@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @include('layouts.common.title', [
-	'title' => "ব্যবহারকারীর সকল ছুটির আবেদনপত্রের তালিকা", 
+	'title' => "ব্যবহারকারীর সকল ছুটির আবেদনপত্রের তালিকা",
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -18,7 +18,7 @@
 				<div class="well" style="padding: 8px;">
 					<div class="row">
 						<div class="col-md-4">
-							
+
 						</div>
 						<div class="col-md-8 text-right">
 							<form action="" method="GET" class="form form-inline" role="form">
@@ -66,9 +66,9 @@
 					<h3 class="text-center">কোনো রেজাল্ট খুঁজে পাওয়া যায় নি</h3>
 	            @endif
 
-			</div>   		
+			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 @stop
 
@@ -82,7 +82,7 @@
 		        $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
 		        $(this).find(":select").filter(function(){ return !this.value; }).attr("disabled", "disabled");
 		        return true;
-		    });	
+		    });
 		});
 	</script>
 @endsection

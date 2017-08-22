@@ -1,74 +1,81 @@
 @extends('layouts.master')
-@php
-	$title = Request::is('settings/leave') ? 'বাৎসরিক ছুটি ব্যাবস্থাপনা' : 'বাৎসরিক নতুন ছুটি';
-@endphp
-@include('layouts.common.title', [
-	'title' => $title, 
-	'link' => 'User Management &nbsp;>&nbsp; User List'
-])
+
+@include('layouts.common.title', ['title' => 'সকল পদমর্যাদার তালিকা
+
+', 'link' => 'Test Link'])
+
+@section('style')
+	<style>
+		#list5 { color:#eee; margin-left: 5px; }
+		#list5 ul { font-size: 16px; }
+		#list5  ul { list-style: none; }
+		#list5 ul li  i { padding-right: 14px; }
+		#list5 ul li { color:#000;  padding-bottom:6px;  }
+		#list5 ul li:first-child { padding-bottom:6px; padding-top:6px;  }
+		.nested-roles {
+			border: 1px solid #ddd;
+		    position: relative;
+		    padding: 6px 10px;
+		    height: auto;
+		    min-height: 20px;
+		    width: 100%;
+		    line-height: 30px;
+		    overflow: hidden;
+		    word-wrap: break-word;
+		    background: #fafafa;
+    		color: #23282d;
+		}
+		.pull-right { margin-top: 5px; }
+	</style>
+@stop
 
 @section('content')
 <div class="row">
 	<div class="col-xs-12">
 
-		@include('settings._tabheader')
+	@include('settings._tabheader')
 
-		<div class="tab-content rendering-content">
-			<div class="tab-pane {{ Request::is('settings/leave') ? 'active' : '' }}" id="tabLeaves">
+	<div class="tab-content rendering-content">
+		<div class="tab-pane {{ Request::is('settings/roles') ? 'active' : '' }}" id="tabLeaves">
+			<div class="tab-pane active" id="tabProfile">
 				<div class="well" style="padding: 8px;">
 					<div class="row">
-						<div class="col-md-6">
-							<a href="{{ url('settings/leave/create') }}" class="btn btn-primary btn-sm">
-								<i class="fa fa-plus"></i>&nbsp;নতুন ছুটি যোগ করুন
-							</a>
+						<div class="col-md-10">
+							<h4>পদমর্যাদার তালিকা</h4>
 						</div>
-						<div class="col-md-6 text-right">
-							<form action="" method="GET" class="form form-inline" role="form">
-								<div class="form-group">
-									<label class="sr-only" for="">label</label>
-									<select name="year" id="" class="form-control">
-										<option value="">বছর সিলেক্ট করুন</option>
-										@for($i = 2017; $i < 2050; $i++)
-										<option value="{{ $i }}" {{ (Request::input('year') ? : date('Y')) == $i ? 'selected' : '' }}>
-											{{ entobn($i) }}
-										</option>
-										@endfor
-									</select>
-								</div>
-								<button type="submit" class="btn btn-primary">
-									<i class="fa fa-search"></i> সার্চ করুন
-								</button>
-							</form>
+						<div class="col-md-2">
+							<a href="{{ route('roles.create') }}"
+								class="btn btn-primary btn-sm pull-right"
+							>
+								<i class="fa fa-plus"></i> নতুন  অনুমোদন
+							</a>
 						</div>
 					</div>
 				</div>
-				@if($leaves->count())
-					@include('settings.leave.views._table')
-	            @else
-					<h3 class="text-center">ছুটি ব্যাবস্থাপনার কোনো তথ্য খুঁজে পাওয়া যায় নি</h3>
-	            @endif
-			</div>   		
+			</div>
+			<div id="list5">
+				<ul>
+					@php
+						$traverse = function ($roles, $prefix = '<li> <div class="nested-roles"> <i class="fa  fa-arrow-right"></i>') use (&$traverse) {
+						    foreach ($roles as $role) {
+						    	// dd($role);
+						    	echo PHP_EOL.$prefix . $role->text;
+						    	echo '&nbsp;&nbsp;&nbsp;&nbsp;<a href="'. url('settings/roles/' . $role->id. '/edit') . '"><i class="fa fa-edit pull-right"></i></a></div>';
+						        if(count($role->children))
+						        {
+						        	echo '<ul>';
+							        $traverse($role->children);
+							        echo '</ul>';
+							    }
+								echo '</li>';
+						    }
+						};
+						$traverse($roles);
+				    @endphp
+				</ul>
+			</div>
 		</div>
-	</div>	
+	</div>
+	</div>
 </div>
-@stop
-
-@section('script')
-@if(count($leaves))
-    @include('layouts.common.dt-search')
-@endif
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.datepicker').datepicker({
-			changeMonth: true,
-            changeYear: true,
-            yearRange: "{{ \Carbon\Carbon::now()->subYears(90)->format('Y') . ':' . \Carbon\Carbon::now()->format('Y') }}"
-		});	
-		$(".form").on('submit', function() {
-	      $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
-	      $(this).find(":select").filter(function(){ return !this.value; }).attr("disabled", "disabled");
-	      return true;
-	    });	
-	});
-</script>
 @stop

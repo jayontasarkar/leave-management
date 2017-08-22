@@ -1,29 +1,28 @@
+@inject('roles', 'App\Http\Services\RolesService')
+
 @extends('layouts.master')
-@include('layouts.common.title', [
-	'title' => 'ছুটির তথ্য পরিবর্তন করুন', 
-	'link' => 'User Management &nbsp;>&nbsp; User List'
-])
+@include('layouts.common.title', ['title' => 'পদমর্যাদার তথ্য পরিবর্তন করা হয়েছে |', 'link' => 'Test Link'])
 
 @section('content')
-<div class="row">
-	<div class="col-xs-12">
-		@include('settings._tabheader')
-		<div class="tab-content rendering-content">
-			<div class="tab-pane active" id="tabEditLeaves">
-				@include('settings.leave.views._edit')
-			</div>   		
+	<div class="row">
+		<div class="col-xs-12">
+			@include('settings._tabheader')
+			<div class="tab-content rendering-content">
+				<div class="tab-pane active" id="tabLeaves">
+					@include('settings.roles.views._edit')
+				</div>
+			</div>
 		</div>
-	</div>	
-</div>
-@stop
+	</div>
+ @stop
 
 @section('script')
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="{{ asset('AdminLTE/easyui/js/easyui.min.js') }}"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.datepicker').datepicker({
-			changeMonth: true,
-            changeYear: true,
-            yearRange: "{{ \Carbon\Carbon::now()->subYears(90)->format('Y') . ':' . \Carbon\Carbon::now()->format('Y') }}"
+		$('#cc').combotree({
+			data: {!! json_encode($roles->get()) !!}
 		});
 	});
 </script>

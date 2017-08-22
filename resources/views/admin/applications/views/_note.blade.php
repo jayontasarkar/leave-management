@@ -37,8 +37,8 @@
                         <div class="form-group" style="width: 100%; padding-left: 20px; margin-bottom: 15px;">
                             <select name="status" class="form-control" style="width: 100%;">
                                 <option value="">স্ট্যাটাস সিলেক্ট করুন</option>
-                                <option value="2">অনুমোদন করুন</option>
-                                <option value="1">বাতিল করুন</option>
+                                <option value="2">অনুমোদন করা হলো</option>
+                                <option value="3">বাতিল করা হলো</option>
                             </select>
                         </div>
                         <div class="form-group" style="width: 100%; padding-left: 20px; margin-bottom: 15px;">

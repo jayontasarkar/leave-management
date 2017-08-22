@@ -6,9 +6,15 @@
     </li>
     <li class="{{ Request::segment(1) == 'apply' ? 'active' : '' }}">
         <a href="{{ url('apply') }}">
-            <i class="fa fa-envelope-o"></i> <span>ছুটির আবেদন</span>
+            <i class="fa fa-envelope-o"></i> <span>ছুটির জন্য আবেদন</span>
         </a>
     </li>
+    <li class="{{ Request::is('profile/applications') ? 'active' : '' }}">
+        <a href="{{ url('profile/applications') }}">
+            <i class="fa fa-trash-o"></i> <span>ছুটির আবেদনপত্রসমূহ</span>
+        </a>
+    </li>
+    @if($user->type === 'admin')
     <li class="treeview{{ Request::segment(1) == 'user-management' ? ' active' : '' }}">
         <a href="#">
             <span class="glyphicon glyphicon-user"></span>
@@ -40,8 +46,15 @@
                     <i class="fa fa-angle-double-right"></i> ছুটি ব্যাবস্থাপনা
                 </a>
             </li>
+            <li class="{{ Request::segment(2) == 'roles' ? 'active' : '' }}">
+                <a href="{{ url('settings/roles') }}">
+                    <i class="fa fa-angle-double-right"></i> পদমর্যাদা ব্যবস্থাপনা
+                </a>
+            </li>
         </ul>
     </li>
+    @endif
+    @if($user->role->hasAuthorization())
     <li class="treeview {{ Request::segment(2) == 'leaves' ? 'active' : '' }}">
         <a href="#">
             <i class="fa fa-edit"></i> <span>ছুটি ম্যানেজমেন্ট</span>
@@ -53,4 +66,5 @@
             </li>
         </ul>
     </li>
+    @endif
 </ul>

@@ -2,6 +2,8 @@
 
 namespace App\Traits\Eloquents;
 
+use App\Role;
+
 trait AuthorizationTrait
 {
     /**
@@ -22,5 +24,10 @@ trait AuthorizationTrait
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'authorizations', 'authorizer_id', 'role_id');
+    }
+
+    public function hasAuthorization()
+    {
+        return $this->children->count() ? true : false;
     }
 }

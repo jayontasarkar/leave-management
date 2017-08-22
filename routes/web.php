@@ -1,28 +1,5 @@
 <?php
 
-use App\Role;
-
-Route::get('/authorizers', function () {
-    $roles = Role::with('authorizers')->find(14);
-
-    return $roles->ancestors;
-});
-Route::get('/test', function () {
-    $test = Role::get()->toTree();
-
-    return view('test', compact('test'));
-});
-
-Route::get('/role', function () {
-    $roles = Role::get()->toTree();
-    // $role = Role::find(9);
-    // return Role::create([
-    //     'name' => 'Role 5 SubRole 1',
-    //     'name_bn' => 'Role 5 SubRole 1 Bn'
-    // ], $role);
-    return view('roles', compact('roles'));
-});
-
 Route::get('/', function () {
     return redirect('login');
 });
@@ -34,34 +11,51 @@ Route::group(['namespace' => 'Auth'], function () {
     Route::post('/logout', 'LoginController@logout')->name('logout');
 });
 
-// Logged In User Profile
-Route::get('/profile', 'ProfileController@index');
-Route::get('/profile/edit', 'ProfileController@edit');
-Route::patch('/profile/edit', 'ProfileController@update');
-Route::get('/profile/password', 'ProfileController@getPassword');
-Route::patch('/profile/password', 'ProfileController@patchPassword');
+Route::group(['middleware' => ['auth']], function () {
 
-// Uploads
-Route::post('/profile/upload', 'UploadsController@uploadProfile');
-Route::post('/signature/upload', 'UploadsController@uploadSignature');
+    // Logged In User Profile
+    Route::get('/profile', 'ProfileController@index');
+    Route::get('/profile/edit', 'ProfileController@edit');
+    Route::patch('/profile/edit', 'ProfileController@update');
+    Route::get('/profile/password', 'ProfileController@getPassword');
+    Route::patch('/profile/password', 'ProfileController@patchPassword');
 
-// Logged in user applications
-Route::get('/profile/applications', 'LeaveApplicationsController@index');
-Route::get('/profile/applications/{application}', 'LeaveApplicationsController@show');
-Route::get('/profile/leave', 'LeaveApplicationsController@leaves');
+    // Uploads
+    Route::post('/profile/upload', 'UploadsController@uploadProfile');
+    Route::post('/signature/upload', 'UploadsController@uploadSignature');
 
-// Apply for Leave
-Route::get('/apply', 'ApplyController@create');
-Route::post('/apply', 'ApplyController@store');
+    // Logged in user applications
+    Route::get('/profile/applications', 'LeaveApplicationsController@index');
+    Route::get('/profile/applications/{application}', 'LeaveApplicationsController@show');
+    Route::get('/profile/leave', 'LeaveApplicationsController@leaves');
+
+    // Apply for Leave
+    Route::get('/apply', 'ApplyController@create');
+    Route::post('/apply', 'ApplyController@store');
+});
 
 // Restrict for Admin Only
 Route::group(['namespace' => 'Admin', 'middleware' => ['auth']], function () {
+    Route::get('/user-management/roles', 'UserAuthorizersController@create');
+    Route::post('/user-management/roles', 'UserAuthorizersController@store');
     Route::resource('/user-management', 'UserManagementController');
-    Route::resource('/settings/leave', 'LeaveManagementController');
     Route::resource('admin/leaves', 'EmployeeLeaveController');
     Route::get('employee/{user}/leaves', 'EmployeeProfileController@show');
     Route::get('employee/{user}/reports', 'EmployeeProfileController@report');
     Route::post('admin/applications/approval/{application}', 'LeaveApprovalController@update');
+
+    // Notifications
+    Route::get('/notifications', 'NotificationsController@index');
+
+    // Settings Management
+    Route::group(['middleware' => ['auth', 'admin']], function () {
+        Route::resource('/settings/leave', 'LeaveManagementController');
+        Route::get('settings/roles', 'Roles\RolesManagementController@index')->name('roles.index');
+        Route::get('settings/roles/create', 'Roles\RolesManagementController@create')->name('roles.create');
+        Route::post('settings/roles', 'Roles\RolesManagementController@store')->name('roles.store');
+        Route::get('settings/roles/{role}/edit', 'Roles\RolesManagementController@edit');
+        Route::patch('settings/roles/{role}', 'Roles\RolesManagementController@update')->name('roles.update');
+    });
 });
 
 Route::group(['namespace' => 'Applicant'], function () {

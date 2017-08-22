@@ -1,73 +1,52 @@
-<form class="form" method="POST" action="{{ url('settings/leave/' . $leave->id) }}" style="margin-top: 25px;padding-bottom: 10px;">
+<form class="form" method="POST" action="{{ route('roles.update', [$role]) }}" style="margin-top: 25px;padding-bottom: 10px;">
     {{ csrf_field() }}
     {{ method_field('PATCH') }}
-    <div class="row clearfix">
-        <div class="form-group{{ $errors->has('title')  ? ' has-error' : '' }}">
-            <div class="col-md-2 col-md-offset-1 text-right">
-                <label for="name">ছুটির কারণ<small style="color: red; font-size: 1.2em;">*</small></label>
+    <div class="row clearfix" style="margin-bottom: 25px;">
+        <div class="form-group{{ $errors->has('name')  ? ' has-error' : '' }}">
+            <div class="col-md-3 text-right">
+                <label for="name">পদবীর নাম (ইংরেজিতে)<small style="color: red; font-size: 1.2em;">*</small></label>
             </div>
             <div class="col-md-5">
-                <input type="text" name="title"  class="form-control" id="title"  value="{{ old('title') ? : $leave->title }}">
+                <input type="text" name="name"  class="form-control" id="name"  value="{{ old('name') ? : $role->name }}">
             </div>
             <div class="col-md-4">
-                @include('layouts.common.formError', ['key' => 'title'])
+                @include('layouts.common.formError', ['key' => 'name'])
             </div>
         </div>
     </div>
-    <div class="row clearfix" style="margin-top: 20px;">
-        <div class="form-group{{ $errors->has('from_date') ? ' has-error' : '' }}">
-            <div class="col-md-2 col-md-offset-1 text-right">
-                <label for="from_date">শুরুর তারিখ<small style="color: red; font-size: 1.2em;">*</small></label>
+    <div class="row clearfix" style="margin-bottom: 25px;">
+        <div class="form-group{{ $errors->has('text')  ? ' has-error' : '' }}">
+            <div class="col-md-3 text-right">
+                <label for="text">পদবীর নাম (বাংলায়)<small style="color: red; font-size: 1.2em;">*</small></label>
             </div>
             <div class="col-md-5">
-                <input type="text" name="from_date" class="form-control datepicker" id="from_date" value="{{ old('from_date') ? : $leave->from_date->format('m/d/Y') }}">
+                <input type="text" name="text"  class="form-control" id="text"  value="{{ old('text') ? : $role->text }}">
             </div>
             <div class="col-md-4">
-                @include('layouts.common.formError', ['key' => 'from_date'])
+                @include('layouts.common.formError', ['key' => 'text'])
             </div>
         </div>
     </div>
-    <div class="row clearfix" style="margin-top: 20px;">
-        <div class="form-group{{ $errors->has('to_date') ? ' has-error' : '' }}">
-            <div class="col-md-2 col-md-offset-1 text-right">
-                <label for="to_date">শেষের তারিখ<small style="color: red; font-size: 1.2em;">*</small></label>
+    <div class="row clearfix" style="margin-bottom: 25px;">
+        <div class="form-group{{ $errors->has('parent_id')  ? ' has-error' : '' }}">
+            <div class="col-md-3 text-right">
+                <label for="parent_id">নিকটস্থ উর্ধতন পদবি<small style="color: red; font-size: 1.2em;">*</small></label>
             </div>
             <div class="col-md-5">
-                <input type="text" name="to_date" class="form-control datepicker" id="to_date" value="{{ old('to_date') ? : $leave->to_date->format('m/d/Y') }}">
+                <input id="cc" value="{{ old('parent_id') ? : $role->parent_id }}" style="width: 430px;">
             </div>
             <div class="col-md-4">
-                @include('layouts.common.formError', ['key' => 'to_date'])
+                @include('layouts.common.formError', ['key' => 'parent_id'])
             </div>
         </div>
     </div>
-    <div class="row clearfix" style="margin-top: 20px;">
-        <div class="form-group{{ $errors->has('year') ? ' has-error' : '' }}">
-            <div class="col-md-2 col-md-offset-1 text-right">
-                <label for="year">ছুটির বছর<small style="color: red; font-size: 1.2em;">*</small></label>
-            </div>
-            <div class="col-md-5">
-                <select name="year" id="" class="form-control">
-                    <option value="">বছর সিলেক্ট করুন</option>
-                    @for($i = date('Y'); $i < 2050; $i++)
-                        <option value="{{ $i }}" {{ (old('year') ? : $leave->year) == $i ? 'selected' : '' }}>
-                            {{ entobn($i) }}
-                        </option>
-                    @endfor
-                </select>
-            </div>
-            <div class="col-md-4">
-                @include('layouts.common.formError', ['key' => 'year'])
-            </div>
-        </div>
-    </div>
-    
-    <div class="row" style="margin-top: 25px;">
+    <div class="row">
         <div class="col-md-8 text-right">
             <button class="btn btn-default" style="margin-right:8px;" type="reset">
-                <i class="fa fa-times-circle-o"></i> বাতিল করুন
+                {!! config('leave.buttons.btn_reset') !!}
             </button>
             <button type="submit" class="btn btn-primary">
-                <i class="fa fa-save"></i> পরিবর্তন করুন
+                {!! config('leave.buttons.btn_save') !!}
             </button>
         </div>
     </div>

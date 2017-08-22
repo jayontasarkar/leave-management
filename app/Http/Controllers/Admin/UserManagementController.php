@@ -28,7 +28,8 @@ class UserManagementController extends Controller
      */
     public function create()
     {
-        $users = User::latest()->get();
+        $users = User::latest()->with('role')->get();
+
         return view('user.index', compact('users'));
     }
 
@@ -40,8 +41,11 @@ class UserManagementController extends Controller
      */
     public function store(UserManagementFormRequest $request)
     {
-        User::create($request->all());
-        return redirect('user-management');
+        $user = User::create($request->all());
+        session()->put('user_id', $user->id);
+
+        return redirect('user-management/roles')
+            ->withSuccess('নতুন ব্যবহারকারী যোগ কৰা হয়েছে |');
     }
 
     /**

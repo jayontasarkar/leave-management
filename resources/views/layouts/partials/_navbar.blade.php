@@ -50,7 +50,7 @@
                         </ul>
                     </li>
                     <li class="footer">
-                        <a href="#">সকল ছুটির নোটিফিকেশন</a>
+                        <a href="{{ url('notifications') }}">সকল ছুটির নোটিফিকেশন</a>
                     </li>
                 </ul>
             </li>
@@ -76,7 +76,7 @@
                         </div>
                         <div class="pull-right">
                             <a href="{{ route('logout') }}"
-                                class="btn btn-default btn-flat" 
+                                class="btn btn-default btn-flat"
                                 onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();"
                             >
