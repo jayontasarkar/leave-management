@@ -22,12 +22,12 @@
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li class="{{ Request::is('user-management/create') ? ' active' : '' }}">
-                <a href="{{url('/user-management/create')}}">
+            <li class="{{ Request::is('user-management/create') ? 'active' : '' }}">
+                <a href="{{url('user-management/create')}}">
                     <i class="fa fa-angle-double-right"></i>নতুন ব্যবহারকারী
                 </a>
             </li>
-            <li class="{{ Request::is('user-management') ? ' active' : '' }}">
+            <li class="{{ Request::is('user-management') ? 'active' : '' }}">
                 <a href="{{url('/user-management')}}">
                     <i class="fa fa-angle-double-right"></i>ব্যবহারকারীর তালিকা
                 </a>

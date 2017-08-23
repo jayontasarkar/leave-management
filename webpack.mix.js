@@ -17,10 +17,10 @@ mix.scripts([
 	'public/AdminLTE/js/jquery-2.0.2.min.js',
 	'public/AdminLTE/js/plugins/jquery-ui/jquery-ui.js',
 	'public/AdminLTE/js/bootstrap.min.js',
-	'public/AdminLTE/js/plugins/slimScroll/jquery.slimscroll.js',
 	'public/AdminLTE/js/plugins/fullcalendar/fullcalendar.min.js',
 	'public/AdminLTE/js/plugins/datatables/jquery.dataTables.js',
 	'public/AdminLTE/js/plugins/datatables/dataTables.bootstrap.js',
+	'public/AdminLTE/js/plugins/iCheck/icheck.js',
 	'public/AdminLTE/js/AdminLTE/app.js'
 ], 'public/js/theme.js');
 

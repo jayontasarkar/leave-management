@@ -20717,471 +20717,6 @@ if (typeof jQuery === "undefined") { throw new Error("Bootstrap requires jQuery"
 
 }(jQuery);
 
-/*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- *
- * Version: 1.3.0
- *
- */
-(function($) {
-
-  jQuery.fn.extend({
-    slimScroll: function(options) {
-
-      var defaults = {
-
-        // width in pixels of the visible scroll area
-        width : 'auto',
-
-        // height in pixels of the visible scroll area
-        height : '250px',
-
-        // width in pixels of the scrollbar and rail
-        size : '7px',
-
-        // scrollbar color, accepts any hex/color value
-        color: '#000',
-
-        // scrollbar position - left/right
-        position : 'right',
-
-        // distance in pixels between the side edge and the scrollbar
-        distance : '1px',
-
-        // default scroll position on load - top / bottom / $('selector')
-        start : 'top',
-
-        // sets scrollbar opacity
-        opacity : .4,
-
-        // enables always-on mode for the scrollbar
-        alwaysVisible : false,
-
-        // check if we should hide the scrollbar when user is hovering over
-        disableFadeOut : false,
-
-        // sets visibility of the rail
-        railVisible : false,
-
-        // sets rail color
-        railColor : '#333',
-
-        // sets rail opacity
-        railOpacity : .2,
-
-        // whether  we should use jQuery UI Draggable to enable bar dragging
-        railDraggable : true,
-
-        // defautlt CSS class of the slimscroll rail
-        railClass : 'slimScrollRail',
-
-        // defautlt CSS class of the slimscroll bar
-        barClass : 'slimScrollBar',
-
-        // defautlt CSS class of the slimscroll wrapper
-        wrapperClass : 'slimScrollDiv',
-
-        // check if mousewheel should scroll the window if we reach top/bottom
-        allowPageScroll : false,
-
-        // scroll amount applied to each mouse wheel step
-        wheelStep : 20,
-
-        // scroll amount applied when user is using gestures
-        touchScrollStep : 200,
-
-        // sets border radius
-        borderRadius: '7px',
-
-        // sets border radius of the rail
-        railBorderRadius : '7px'
-      };
-
-      var o = $.extend(defaults, options);
-
-      // do it for every element that matches selector
-      this.each(function(){
-
-      var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
-        barHeight, percentScroll, lastScroll,
-        divS = '<div></div>',
-        minBarHeight = 30,
-        releaseScroll = false;
-
-        // used in event handlers and for better minification
-        var me = $(this);
-
-        // ensure we are not binding it again
-        if (me.parent().hasClass(o.wrapperClass))
-        {
-            // start from last bar position
-            var offset = me.scrollTop();
-
-            // find bar and rail
-            bar = me.parent().find('.' + o.barClass);
-            rail = me.parent().find('.' + o.railClass);
-
-            getBarHeight();
-
-            // check if we should scroll existing instance
-            if ($.isPlainObject(options))
-            {
-              // Pass height: auto to an existing slimscroll object to force a resize after contents have changed
-              if ( 'height' in options && options.height == 'auto' ) {
-                me.parent().css('height', 'auto');
-                me.css('height', 'auto');
-                var height = me.parent().parent().height();
-                me.parent().css('height', height);
-                me.css('height', height);
-              }
-
-              if ('scrollTo' in options)
-              {
-                // jump to a static point
-                offset = parseInt(o.scrollTo);
-              }
-              else if ('scrollBy' in options)
-              {
-                // jump by value pixels
-                offset += parseInt(o.scrollBy);
-              }
-              else if ('destroy' in options)
-              {
-                // remove slimscroll elements
-                bar.remove();
-                rail.remove();
-                me.unwrap();
-                return;
-              }
-
-              // scroll content by the given offset
-              scrollContent(offset, false, true);
-            }
-
-            return;
-        }
-
-        // optionally set height to the parent's height
-        o.height = (o.height == 'auto') ? me.parent().height() : o.height;
-
-        // wrap content
-        var wrapper = $(divS)
-          .addClass(o.wrapperClass)
-          .css({
-            position: 'relative',
-            overflow: 'hidden',
-            width: o.width,
-            height: o.height
-          });
-
-        // update style for the div
-        me.css({
-          overflow: 'hidden',
-          width: o.width,
-          height: o.height
-        });
-
-        // create scrollbar rail
-        var rail = $(divS)
-          .addClass(o.railClass)
-          .css({
-            width: o.size,
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            display: (o.alwaysVisible && o.railVisible) ? 'block' : 'none',
-            'border-radius': o.railBorderRadius,
-            background: o.railColor,
-            opacity: o.railOpacity,
-            zIndex: 90
-          });
-
-        // create scrollbar
-        var bar = $(divS)
-          .addClass(o.barClass)
-          .css({
-            background: o.color,
-            width: o.size,
-            position: 'absolute',
-            top: 0,
-            opacity: o.opacity,
-            display: o.alwaysVisible ? 'block' : 'none',
-            'border-radius' : o.borderRadius,
-            BorderRadius: o.borderRadius,
-            MozBorderRadius: o.borderRadius,
-            WebkitBorderRadius: o.borderRadius,
-            zIndex: 99
-          });
-
-        // set position
-        var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
-        rail.css(posCss);
-        bar.css(posCss);
-
-        // wrap it
-        me.wrap(wrapper);
-
-        // append to parent div
-        me.parent().append(bar);
-        me.parent().append(rail);
-
-        // make it draggable and no longer dependent on the jqueryUI
-        if (o.railDraggable){
-          bar.bind("mousedown", function(e) {
-            var $doc = $(document);
-            isDragg = true;
-            t = parseFloat(bar.css('top'));
-            pageY = e.pageY;
-
-            $doc.bind("mousemove.slimscroll", function(e){
-              currTop = t + e.pageY - pageY;
-              bar.css('top', currTop);
-              scrollContent(0, bar.position().top, false);// scroll content
-            });
-
-            $doc.bind("mouseup.slimscroll", function(e) {
-              isDragg = false;hideBar();
-              $doc.unbind('.slimscroll');
-            });
-            return false;
-          }).bind("selectstart.slimscroll", function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-          });
-        }
-
-        // on rail over
-        rail.hover(function(){
-          showBar();
-        }, function(){
-          hideBar();
-        });
-
-        // on bar over
-        bar.hover(function(){
-          isOverBar = true;
-        }, function(){
-          isOverBar = false;
-        });
-
-        // show on parent mouseover
-        me.hover(function(){
-          isOverPanel = true;
-          showBar();
-          hideBar();
-        }, function(){
-          isOverPanel = false;
-          hideBar();
-        });
-
-        // support for mobile
-        me.bind('touchstart', function(e,b){
-          if (e.originalEvent.touches.length)
-          {
-            // record where touch started
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        me.bind('touchmove', function(e){
-          // prevent scrolling the page if necessary
-          if(!releaseScroll)
-          {
-  		      e.originalEvent.preventDefault();
-		      }
-          if (e.originalEvent.touches.length)
-          {
-            // see how far user swiped
-            var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
-            // scroll content
-            scrollContent(diff, true);
-            touchDif = e.originalEvent.touches[0].pageY;
-          }
-        });
-
-        // set up initial height
-        getBarHeight();
-
-        // check start position
-        if (o.start === 'bottom')
-        {
-          // scroll content to bottom
-          bar.css({ top: me.outerHeight() - bar.outerHeight() });
-          scrollContent(0, true);
-        }
-        else if (o.start !== 'top')
-        {
-          // assume jQuery selector
-          scrollContent($(o.start).position().top, null, true);
-
-          // make sure bar stays hidden
-          if (!o.alwaysVisible) { bar.hide(); }
-        }
-
-        // attach scroll events
-        attachWheel();
-
-        function _onWheel(e)
-        {
-          // use mouse wheel only when mouse is over
-          if (!isOverPanel) { return; }
-
-          var e = e || window.event;
-
-          var delta = 0;
-          if (e.wheelDelta) { delta = -e.wheelDelta/120; }
-          if (e.detail) { delta = e.detail / 3; }
-
-          var target = e.target || e.srcTarget || e.srcElement;
-          if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
-            // scroll content
-            scrollContent(delta, true);
-          }
-
-          // stop window scroll
-          if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
-          if (!releaseScroll) { e.returnValue = false; }
-        }
-
-        function scrollContent(y, isWheel, isJump)
-        {
-          releaseScroll = false;
-          var delta = y;
-          var maxTop = me.outerHeight() - bar.outerHeight();
-
-          if (isWheel)
-          {
-            // move bar with mouse wheel
-            delta = parseInt(bar.css('top')) + y * parseInt(o.wheelStep) / 100 * bar.outerHeight();
-
-            // move bar, make sure it doesn't go out
-            delta = Math.min(Math.max(delta, 0), maxTop);
-
-            // if scrolling down, make sure a fractional change to the
-            // scroll position isn't rounded away when the scrollbar's CSS is set
-            // this flooring of delta would happened automatically when
-            // bar.css is set below, but we floor here for clarity
-            delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
-
-            // scroll the scrollbar
-            bar.css({ top: delta + 'px' });
-          }
-
-          // calculate actual scroll amount
-          percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
-          delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
-
-          if (isJump)
-          {
-            delta = y;
-            var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
-            offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
-            bar.css({ top: offsetTop + 'px' });
-          }
-
-          // scroll content
-          me.scrollTop(delta);
-
-          // fire scrolling event
-          me.trigger('slimscrolling', ~~delta);
-
-          // ensure bar is visible
-          showBar();
-
-          // trigger hide when scroll is stopped
-          hideBar();
-        }
-
-        function attachWheel()
-        {
-          if (window.addEventListener)
-          {
-            this.addEventListener('DOMMouseScroll', _onWheel, false );
-            this.addEventListener('mousewheel', _onWheel, false );
-            this.addEventListener('MozMousePixelScroll', _onWheel, false );
-          }
-          else
-          {
-            document.attachEvent("onmousewheel", _onWheel)
-          }
-        }
-
-        function getBarHeight()
-        {
-          // calculate scrollbar height and make sure it is not too small
-          barHeight = Math.max((me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
-          bar.css({ height: barHeight + 'px' });
-
-          // hide scrollbar if content is not long enough
-          var display = barHeight == me.outerHeight() ? 'none' : 'block';
-          bar.css({ display: display });
-        }
-
-        function showBar()
-        {
-          // recalculate bar height
-          getBarHeight();
-          clearTimeout(queueHide);
-
-          // when bar reached top or bottom
-          if (percentScroll == ~~percentScroll)
-          {
-            //release wheel
-            releaseScroll = o.allowPageScroll;
-
-            // publish approporiate event
-            if (lastScroll != percentScroll)
-            {
-                var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
-                me.trigger('slimscroll', msg);
-            }
-          }
-          else
-          {
-            releaseScroll = false;
-          }
-          lastScroll = percentScroll;
-
-          // show only when required
-          if(barHeight >= me.outerHeight()) {
-            //allow window scroll
-            releaseScroll = true;
-            return;
-          }
-          bar.stop(true,true).fadeIn('fast');
-          if (o.railVisible) { rail.stop(true,true).fadeIn('fast'); }
-        }
-
-        function hideBar()
-        {
-          // only hide when options allow it
-          if (!o.alwaysVisible)
-          {
-            queueHide = setTimeout(function(){
-              if (!(o.disableFadeOut && isOverPanel) && !isOverBar && !isDragg)
-              {
-                bar.fadeOut('slow');
-                rail.fadeOut('slow');
-              }
-            }, 1000);
-          }
-        }
-
-      });
-
-      // maintain chainability
-      return this;
-    }
-  });
-
-  jQuery.fn.extend({
-    slimscroll: jQuery.fn.slimScroll
-  });
-
-})(jQuery);
-
 /*!
  * FullCalendar v1.6.4
  * Docs & License: http://arshaw.com/fullcalendar/
@@ -33540,6 +33075,513 @@ if ( $.fn.DataTable.TableTools ) {
 	} );
 }
 /*!
+ * iCheck v1.0.1, http://git.io/arlzeA
+ * =================================
+ * Powerful jQuery and Zepto plugin for checkboxes and radio buttons customization
+ *
+ * (c) 2013 Damir Sultanov, http://fronteed.com
+ * MIT Licensed
+ */
+
+(function($) {
+
+  // Cached vars
+  var _iCheck = 'iCheck',
+    _iCheckHelper = _iCheck + '-helper',
+    _checkbox = 'checkbox',
+    _radio = 'radio',
+    _checked = 'checked',
+    _unchecked = 'un' + _checked,
+    _disabled = 'disabled',
+    _determinate = 'determinate',
+    _indeterminate = 'in' + _determinate,
+    _update = 'update',
+    _type = 'type',
+    _click = 'click',
+    _touch = 'touchbegin.i touchend.i',
+    _add = 'addClass',
+    _remove = 'removeClass',
+    _callback = 'trigger',
+    _label = 'label',
+    _cursor = 'cursor',
+    _mobile = /ipad|iphone|ipod|android|blackberry|windows phone|opera mini|silk/i.test(navigator.userAgent);
+
+  // Plugin init
+  $.fn[_iCheck] = function(options, fire) {
+
+    // Walker
+    var handle = 'input[type="' + _checkbox + '"], input[type="' + _radio + '"]',
+      stack = $(),
+      walker = function(object) {
+        object.each(function() {
+          var self = $(this);
+
+          if (self.is(handle)) {
+            stack = stack.add(self);
+          } else {
+            stack = stack.add(self.find(handle));
+          };
+        });
+      };
+
+    // Check if we should operate with some method
+    if (/^(check|uncheck|toggle|indeterminate|determinate|disable|enable|update|destroy)$/i.test(options)) {
+
+      // Normalize method's name
+      options = options.toLowerCase();
+
+      // Find checkboxes and radio buttons
+      walker(this);
+
+      return stack.each(function() {
+        var self = $(this);
+
+        if (options == 'destroy') {
+          tidy(self, 'ifDestroyed');
+        } else {
+          operate(self, true, options);
+        };
+
+        // Fire method's callback
+        if ($.isFunction(fire)) {
+          fire();
+        };
+      });
+
+    // Customization
+    } else if (typeof options == 'object' || !options) {
+
+      // Check if any options were passed
+      var settings = $.extend({
+          checkedClass: _checked,
+          disabledClass: _disabled,
+          indeterminateClass: _indeterminate,
+          labelHover: true,
+          aria: false
+        }, options),
+
+        selector = settings.handle,
+        hoverClass = settings.hoverClass || 'hover',
+        focusClass = settings.focusClass || 'focus',
+        activeClass = settings.activeClass || 'active',
+        labelHover = !!settings.labelHover,
+        labelHoverClass = settings.labelHoverClass || 'hover',
+
+        // Setup clickable area
+        area = ('' + settings.increaseArea).replace('%', '') | 0;
+
+      // Selector limit
+      if (selector == _checkbox || selector == _radio) {
+        handle = 'input[type="' + selector + '"]';
+      };
+
+      // Clickable area limit
+      if (area < -50) {
+        area = -50;
+      };
+
+      // Walk around the selector
+      walker(this);
+
+      return stack.each(function() {
+        var self = $(this);
+
+        // If already customized
+        tidy(self);
+
+        var node = this,
+          id = node.id,
+
+          // Layer styles
+          offset = -area + '%',
+          size = 100 + (area * 2) + '%',
+          layer = {
+            position: 'absolute',
+            top: offset,
+            left: offset,
+            display: 'block',
+            width: size,
+            height: size,
+            margin: 0,
+            padding: 0,
+            background: '#fff',
+            border: 0,
+            opacity: 0
+          },
+
+          // Choose how to hide input
+          hide = _mobile ? {
+            position: 'absolute',
+            visibility: 'hidden'
+          } : area ? layer : {
+            position: 'absolute',
+            opacity: 0
+          },
+
+          // Get proper class
+          className = node[_type] == _checkbox ? settings.checkboxClass || 'i' + _checkbox : settings.radioClass || 'i' + _radio,
+
+          // Find assigned labels
+          label = $(_label + '[for="' + id + '"]').add(self.closest(_label)),
+
+          // Check ARIA option
+          aria = !!settings.aria,
+
+          // Set ARIA placeholder
+          ariaID = _iCheck + '-' + Math.random().toString(36).replace('0.', ''),
+
+          // Parent & helper
+          parent = '<div class="' + className + '" ' + (aria ? 'role="' + node[_type] + '" ' : ''),
+          helper;
+
+        // Set ARIA "labelledby"
+        if (label.length && aria) {
+          label.each(function() {
+            parent += 'aria-labelledby="';
+
+            if (this.id) {
+              parent += this.id;
+            } else {
+              this.id = ariaID;
+              parent += ariaID;
+            }
+
+            parent += '"';
+          });
+        };
+
+        // Wrap input
+        parent = self.wrap(parent + '/>')[_callback]('ifCreated').parent().append(settings.insert);
+
+        // Layer addition
+        helper = $('<ins class="' + _iCheckHelper + '"/>').css(layer).appendTo(parent);
+
+        // Finalize customization
+        self.data(_iCheck, {o: settings, s: self.attr('style')}).css(hide);
+        !!settings.inheritClass && parent[_add](node.className || '');
+        !!settings.inheritID && id && parent.attr('id', _iCheck + '-' + id);
+        parent.css('position') == 'static' && parent.css('position', 'relative');
+        operate(self, true, _update);
+
+        // Label events
+        if (label.length) {
+          label.on(_click + '.i mouseover.i mouseout.i ' + _touch, function(event) {
+            var type = event[_type],
+              item = $(this);
+
+            // Do nothing if input is disabled
+            if (!node[_disabled]) {
+
+              // Click
+              if (type == _click) {
+                if ($(event.target).is('a')) {
+                  return;
+                }
+                operate(self, false, true);
+
+              // Hover state
+              } else if (labelHover) {
+
+                // mouseout|touchend
+                if (/ut|nd/.test(type)) {
+                  parent[_remove](hoverClass);
+                  item[_remove](labelHoverClass);
+                } else {
+                  parent[_add](hoverClass);
+                  item[_add](labelHoverClass);
+                };
+              };
+
+              if (_mobile) {
+                event.stopPropagation();
+              } else {
+                return false;
+              };
+            };
+          });
+        };
+
+        // Input events
+        self.on(_click + '.i focus.i blur.i keyup.i keydown.i keypress.i', function(event) {
+          var type = event[_type],
+            key = event.keyCode;
+
+          // Click
+          if (type == _click) {
+            return false;
+
+          // Keydown
+          } else if (type == 'keydown' && key == 32) {
+            if (!(node[_type] == _radio && node[_checked])) {
+              if (node[_checked]) {
+                off(self, _checked);
+              } else {
+                on(self, _checked);
+              };
+            };
+
+            return false;
+
+          // Keyup
+          } else if (type == 'keyup' && node[_type] == _radio) {
+            !node[_checked] && on(self, _checked);
+
+          // Focus/blur
+          } else if (/us|ur/.test(type)) {
+            parent[type == 'blur' ? _remove : _add](focusClass);
+          };
+        });
+
+        // Helper events
+        helper.on(_click + ' mousedown mouseup mouseover mouseout ' + _touch, function(event) {
+          var type = event[_type],
+
+            // mousedown|mouseup
+            toggle = /wn|up/.test(type) ? activeClass : hoverClass;
+
+          // Do nothing if input is disabled
+          if (!node[_disabled]) {
+
+            // Click
+            if (type == _click) {
+              operate(self, false, true);
+
+            // Active and hover states
+            } else {
+
+              // State is on
+              if (/wn|er|in/.test(type)) {
+
+                // mousedown|mouseover|touchbegin
+                parent[_add](toggle);
+
+              // State is off
+              } else {
+                parent[_remove](toggle + ' ' + activeClass);
+              };
+
+              // Label hover
+              if (label.length && labelHover && toggle == hoverClass) {
+
+                // mouseout|touchend
+                label[/ut|nd/.test(type) ? _remove : _add](labelHoverClass);
+              };
+            };
+
+            if (_mobile) {
+              event.stopPropagation();
+            } else {
+              return false;
+            };
+          };
+        });
+      });
+    } else {
+      return this;
+    };
+  };
+
+  // Do something with inputs
+  function operate(input, direct, method) {
+    var node = input[0],
+      state = /er/.test(method) ? _indeterminate : /bl/.test(method) ? _disabled : _checked,
+      active = method == _update ? {
+        checked: node[_checked],
+        disabled: node[_disabled],
+        indeterminate: input.attr(_indeterminate) == 'true' || input.attr(_determinate) == 'false'
+      } : node[state];
+
+    // Check, disable or indeterminate
+    if (/^(ch|di|in)/.test(method) && !active) {
+      on(input, state);
+
+    // Uncheck, enable or determinate
+    } else if (/^(un|en|de)/.test(method) && active) {
+      off(input, state);
+
+    // Update
+    } else if (method == _update) {
+
+      // Handle states
+      for (var state in active) {
+        if (active[state]) {
+          on(input, state, true);
+        } else {
+          off(input, state, true);
+        };
+      };
+
+    } else if (!direct || method == 'toggle') {
+
+      // Helper or label was clicked
+      if (!direct) {
+        input[_callback]('ifClicked');
+      };
+
+      // Toggle checked state
+      if (active) {
+        if (node[_type] !== _radio) {
+          off(input, state);
+        };
+      } else {
+        on(input, state);
+      };
+    };
+  };
+
+  // Add checked, disabled or indeterminate state
+  function on(input, state, keep) {
+    var node = input[0],
+      parent = input.parent(),
+      checked = state == _checked,
+      indeterminate = state == _indeterminate,
+      disabled = state == _disabled,
+      callback = indeterminate ? _determinate : checked ? _unchecked : 'enabled',
+      regular = option(input, callback + capitalize(node[_type])),
+      specific = option(input, state + capitalize(node[_type]));
+
+    // Prevent unnecessary actions
+    if (node[state] !== true) {
+
+      // Toggle assigned radio buttons
+      if (!keep && state == _checked && node[_type] == _radio && node.name) {
+        var form = input.closest('form'),
+          inputs = 'input[name="' + node.name + '"]';
+
+        inputs = form.length ? form.find(inputs) : $(inputs);
+
+        inputs.each(function() {
+          if (this !== node && $(this).data(_iCheck)) {
+            off($(this), state);
+          };
+        });
+      };
+
+      // Indeterminate state
+      if (indeterminate) {
+
+        // Add indeterminate state
+        node[state] = true;
+
+        // Remove checked state
+        if (node[_checked]) {
+          off(input, _checked, 'force');
+        };
+
+      // Checked or disabled state
+      } else {
+
+        // Add checked or disabled state
+        if (!keep) {
+          node[state] = true;
+        };
+
+        // Remove indeterminate state
+        if (checked && node[_indeterminate]) {
+          off(input, _indeterminate, false);
+        };
+      };
+
+      // Trigger callbacks
+      callbacks(input, checked, state, keep);
+    };
+
+    // Add proper cursor
+    if (node[_disabled] && !!option(input, _cursor, true)) {
+      parent.find('.' + _iCheckHelper).css(_cursor, 'default');
+    };
+
+    // Add state class
+    parent[_add](specific || option(input, state) || '');
+
+    // Set ARIA attribute
+    disabled ? parent.attr('aria-disabled', 'true') : parent.attr('aria-checked', indeterminate ? 'mixed' : 'true');
+
+    // Remove regular state class
+    parent[_remove](regular || option(input, callback) || '');
+  };
+
+  // Remove checked, disabled or indeterminate state
+  function off(input, state, keep) {
+    var node = input[0],
+      parent = input.parent(),
+      checked = state == _checked,
+      indeterminate = state == _indeterminate,
+      disabled = state == _disabled,
+      callback = indeterminate ? _determinate : checked ? _unchecked : 'enabled',
+      regular = option(input, callback + capitalize(node[_type])),
+      specific = option(input, state + capitalize(node[_type]));
+
+    // Prevent unnecessary actions
+    if (node[state] !== false) {
+
+      // Toggle state
+      if (indeterminate || !keep || keep == 'force') {
+        node[state] = false;
+      };
+
+      // Trigger callbacks
+      callbacks(input, checked, callback, keep);
+    };
+
+    // Add proper cursor
+    if (!node[_disabled] && !!option(input, _cursor, true)) {
+      parent.find('.' + _iCheckHelper).css(_cursor, 'pointer');
+    };
+
+    // Remove state class
+    parent[_remove](specific || option(input, state) || '');
+
+    // Set ARIA attribute
+    disabled ? parent.attr('aria-disabled', 'false') : parent.attr('aria-checked', 'false');
+
+    // Add regular state class
+    parent[_add](regular || option(input, callback) || '');
+  };
+
+  // Remove all traces
+  function tidy(input, callback) {
+    if (input.data(_iCheck)) {
+
+      // Remove everything except input
+      input.parent().html(input.attr('style', input.data(_iCheck).s || ''));
+
+      // Callback
+      if (callback) {
+        input[_callback](callback);
+      };
+
+      // Unbind events
+      input.off('.i').unwrap();
+      $(_label + '[for="' + input[0].id + '"]').add(input.closest(_label)).off('.i');
+    };
+  };
+
+  // Get some option
+  function option(input, state, regular) {
+    if (input.data(_iCheck)) {
+      return input.data(_iCheck).o[state + (regular ? '' : 'Class')];
+    };
+  };
+
+  // Capitalize some string
+  function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  // Executable handlers
+  function callbacks(input, checked, callback, keep) {
+    if (!keep) {
+      if (checked) {
+        input[_callback]('ifToggled');
+      };
+
+      input[_callback]('ifChanged')[_callback]('if' + capitalize(callback));
+    };
+  };
+})(window.jQuery || window.Zepto);
+
+/*!
  * Author: Abdullah A Almsaeed
  * Date: 4 Jan 2014
  * Description:
@@ -33547,7 +33589,7 @@ if ( $.fn.DataTable.TableTools ) {
  !**/
 
 /*
- * Global variables. If you change any of these vars, don't forget 
+ * Global variables. If you change any of these vars, don't forget
  * to change the values in the less files!
  */
 var left_side_width = 220; //Sidebar width in pixels
@@ -33582,11 +33624,11 @@ $(function() {
     //Activate tooltips
     $("[data-toggle='tooltip']").tooltip();
 
-    /*     
+    /*
      * Add collapse and remove events to boxes
      */
     $("[data-widget='collapse']").click(function() {
-        //Find the box parent        
+        //Find the box parent
         var box = $(this).parents(".box").first();
         //Find the body and the footer
         var bf = box.find(".box-body, .box-footer");
@@ -33599,15 +33641,6 @@ $(function() {
         }
     });
 
-    /*
-     * ADD SLIMSCROLL TO THE TOP NAV DROPDOWNS
-     * ---------------------------------------
-     */
-    $(".navbar .menu").slimscroll({
-        height: "200px",
-        alwaysVisible: false,
-        size: "3px"
-    }).css("width", "100%");
 
     /*
      * INITIALIZE BUTTON TOGGLE
@@ -33624,7 +33657,7 @@ $(function() {
     });
 
     $("[data-widget='remove']").click(function() {
-        //Find the box parent        
+        //Find the box parent
         var box = $(this).parents(".box").first();
         box.slideUp();
     });
@@ -33632,13 +33665,13 @@ $(function() {
     /* Sidebar tree view */
     $(".sidebar .treeview").tree();
 
-    /* 
+    /*
      * Make sure that the sidebar is streched full height
      * ---------------------------------------------
      * We are gonna assign a min-height value every time the
      * wrapper gets resized and upon page load. We will use
      * Ben Alman's method for detecting the resize event.
-     * 
+     *
      **/
     function _fix() {
         //Get window height and the wrapper height
@@ -33666,7 +33699,7 @@ $(function() {
     fix_sidebar();
 
     /*
-     * We are gonna initialize all checkbox and radio inputs to 
+     * We are gonna initialize all checkbox and radio inputs to
      * iCheck plugin in.
      * You can find the documentation at http://fronteed.com/iCheck/
      */
@@ -34016,12 +34049,12 @@ $(window).load(function() {
     }).call(this);
 });
 
-/* 
- * BOX REFRESH BUTTON 
+/*
+ * BOX REFRESH BUTTON
  * ------------------
  * This is a custom plugin to use with the compenet BOX. It allows you to add
  * a refresh button to the box. It converts the box's state to a loading state.
- * 
+ *
  * USAGE:
  *  $("#box-widget").boxRefresh( options );
  * */
@@ -34098,13 +34131,13 @@ $(window).load(function() {
  * SIDEBAR MENU
  * ------------
  * This is a custom plugin for the sidebar menu. It provides a tree view.
- * 
+ *
  * Usage:
  * $(".sidebar).tree();
- * 
+ *
  * Note: This plugin does not accept any options. Instead, it only requires a class
  *       added to the element that contains a sub-menu.
- *       
+ *
  * When used with the sidebar, for example, it would look something like this:
  * <ul class='sidebar-menu'>
  *      <li class="treeview active">
@@ -34114,7 +34147,7 @@ $(window).load(function() {
  *          </ul>
  *      </li>
  * </ul>
- * 
+ *
  * Add .active class to <li> elements if you want the menu to be open automatically
  * on page load. See above for an example.
  */
@@ -34222,7 +34255,7 @@ $(window).load(function() {
 /*
  * jQuery resize event - v1.1 - 3/14/2010
  * http://benalman.com/projects/jquery-resize-plugin/
- * 
+ *
  * Copyright (c) 2010 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
@@ -34286,8 +34319,8 @@ $(window).load(function() {
 /*!
  * SlimScroll https://github.com/rochal/jQuery-slimScroll
  * =======================================================
- * 
- * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT 
+ *
+ * Copyright (c) 2011 Piotr Rochala (http://rocha.la) Dual licensed under the MIT
  */
 (function(f) {
     jQuery.fn.extend({slimScroll: function(h) {

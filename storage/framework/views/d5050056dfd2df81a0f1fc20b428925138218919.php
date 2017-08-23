@@ -39,6 +39,7 @@
     </div><!-- ./wrapper -->
 
     <script src="<?php echo e(asset('js/theme.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE/js/plugins/slimScroll/jquery.slimscroll.js')); ?>"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
