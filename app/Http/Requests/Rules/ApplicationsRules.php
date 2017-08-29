@@ -13,7 +13,7 @@ class ApplicationsRules extends RulesAbstract
             'type_id' => 'required',
             'no_of_days' => 'required',
             'vacation_address' => 'required',
-            'authorizer_id' => 'required|exists:roles,id'
+            'authorizer_id'    => 'required|exists:roles,id'
         ];
 
         if ($id) {
