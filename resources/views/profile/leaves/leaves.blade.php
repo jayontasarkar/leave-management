@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @include('layouts.common.title', [
-	'title' => "বাৎসরিক সকল ছুটির হিসাব", 
+	'title' => "বাৎসরিক সকল ছুটির হিসাব",
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -35,8 +35,15 @@
 					</div>
 				</div>
 				@include('profile.leaves.views._leaves')
-			</div>   		
+			</div>
 		</div>
-	</div>	
+	</div>
 </div>
 @stop
+
+@section('script')
+	@include('layouts.common.dt-export', [
+		'heading' => 'বাৎসরিক সকল ছুটির হিসাব',
+		'columns' => '0, 1, 2, 3, 4, 5, 6'
+	])
+@endsection

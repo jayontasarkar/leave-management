@@ -96,29 +96,6 @@
         </div>
     </div>
 
-    <div class="row clearfix" style="margin-top: 20px;">
-        <div class="form-group{{ $errors->has('authorizer_id') ? ' has-error' : '' }}">
-            <div class="col-md-3 text-right">
-                <label for="no_of_days">অনুমোদনকারীর পদমর্যাদা<small style="color: red; font-size: 1.2em;">*</small></label>
-            </div>
-            <div class="col-md-5">
-                <select name="authorizer_id" id="" class="form-control select2">
-                    <option value="">ছুটি অনুমোদনকারী কর্মকর্তার পদবি সিলেক্ট করুন</option>
-                    @if(count($authorizers))
-                    @foreach($authorizers as $authorizer)
-                        <option value="{{ $authorizer->id }}" {{ old('authorizer_id') == $authorizer->id ? 'selected' : '' }}>
-                            {{ $authorizer->text }}
-                        </option>
-                    @endforeach
-                    @endif
-                </select>
-            </div>
-            <div class="col-md-4">
-                @include('layouts.common.formError', ['key' => 'authorizer_id'])
-            </div>
-        </div>
-    </div>
-
     <div class="row" style="margin-top: 25px;">
         <div class="col-md-8 text-right">
             <button class="btn btn-default" style="margin-right:8px;" type="reset">

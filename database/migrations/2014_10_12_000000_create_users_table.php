@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('mobile', 50)->unique();
             $table->integer('role_id')->unsigned()->default(1);
             $table->string('password', 100);
+            $table->string('type', 100)->default('regular');
             $table->boolean('active')->default(true);
             $table->string('gender', 20)->default('male');
             $table->timestamp('join_date')->nullable();

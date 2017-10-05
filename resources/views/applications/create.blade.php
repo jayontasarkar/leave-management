@@ -1,4 +1,5 @@
 @extends('layouts.master')
+
 @include('layouts.common.title', [
 	'title' => 'আপনার ছুটির জন্য আবেদন করুন',
 	'link' => 'User Management &nbsp;>&nbsp; User List'

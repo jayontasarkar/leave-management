@@ -71,6 +71,10 @@
 @stop
 
 @section('script')
+	@include('layouts.common.dt-export', [
+		'heading' => 'সকল ছুটির আবেদনপত্রের তালিকা',
+		'columns' => '0, 1, 2, 3, 4, 5'
+	])
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$(".form").on('submit', function() {

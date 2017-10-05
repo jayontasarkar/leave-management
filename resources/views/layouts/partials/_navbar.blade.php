@@ -22,35 +22,39 @@
                             <li><!-- Task item -->
                                 <a href="#">
                                     <h3>
-                                        Design some buttons
+                                        Design some buttons fasf afasf fasdf
                                     </h3>
                                 </a>
                             </li><!-- end task item -->
                             <li><!-- Task item -->
                                 <a href="#">
                                     <h3>
-                                        Create a nice theme
+                                        Create a nice theme asfdasff sfadsfsa
                                     </h3>
                                 </a>
                             </li><!-- end task item -->
                             <li><!-- Task item -->
                                 <a href="#">
                                     <h3>
-                                        Some task I need to do
+                                        {{ str_limit(' Some task I need to do Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, possimus?', $limit = 38, $end = '...') }}
                                     </h3>
                                 </a>
                             </li><!-- end task item -->
                             <li><!-- Task item -->
                                 <a href="#">
                                     <h3>
-                                        Make beautiful transitions
+                                        {{ str_limit(' Some task I need to do Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, possimus?', $limit = 37, $end = '...') }}
                                     </h3>
                                 </a>
                             </li><!-- end task item -->
+                            <li>
+                                <a href="{{ url('notifications') }}" class="text-center">
+                                    <h3>
+                                        সকল ছুটির নোটিফিকেশন
+                                    </h3>
+                                </a>
+                            </li>
                         </ul>
-                    </li>
-                    <li class="footer">
-                        <a href="{{ url('notifications') }}">সকল ছুটির নোটিফিকেশন</a>
                     </li>
                 </ul>
             </li>

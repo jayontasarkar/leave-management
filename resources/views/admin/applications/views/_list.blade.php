@@ -20,8 +20,8 @@
                     <td>{{ entobn($leave->end_date->format('M d, Y')) }}</td>
                     <td>{{ config("leave.type." . $leave->type_id) }}</td>
                     <td>
-                        <span class="label label-{{ $leave->status == 2 ? 'success' : 'warning' }}">
-                            {{ $leave->status == 2 ? 'অনুমোদিত' : 'পেন্ডিং' }}
+                        <span class="label label-{{ $leave->status == 1 ? 'success' : 'warning' }}">
+                            {{ $leave->status == 1 ? 'অনুমোদিত' : 'পেন্ডিং' }}
                         </span>
                     </td>
                     <td>
@@ -30,10 +30,12 @@
                         </a> &nbsp;
                         @include('admin.applications.views._modal')
 
+                        @if($leave->hasPermissionToApprove())
                         <a data-toggle="modal" href="#modal-note-{{ $leave->id }}" class="btn btn-xs btn-info" title="Leave Application Details">
                             <i class="fa  fa-edit"></i>
                         </a>
-                        @include('admin.applications.views._note')                        
+                            @include('admin.applications.views._note')
+                        @endif
                     </td>
                 </tr>
                 @endforeach

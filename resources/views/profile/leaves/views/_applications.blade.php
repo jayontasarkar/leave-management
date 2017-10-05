@@ -39,7 +39,7 @@
                                         <p>
                                             <span class="label label-success" style="padding: 4px 6px;">ছুটির প্রকৃতি: {{ config("leave.type." . $leave->type_id) }}</span>
                                             <br><br>
-                                            <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ $leave->status == 1 ? 'অননুমোদিত' : 'অনুমোদিত' }}</span>
+                                            <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ $leave->status == 1 ? 'অনুমোদিত' : 'অননুমোদিত' }}</span>
                                             <br><br>
                                             <strong>ছুটির আবেদনের কারণ:</strong><br>
                                             {{ $leave->reason }}

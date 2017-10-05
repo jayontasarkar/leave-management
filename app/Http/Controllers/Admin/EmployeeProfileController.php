@@ -22,12 +22,15 @@ class EmployeeProfileController extends Controller
                 ->where('user_id', $user->id)
                 ->get();
 
-        return view('admin.employee.show', compact('user', 'leaves'));
+        return view('admin.employee.show', [
+            'profileUser' => $user,
+            'leaves'      => $leaves
+        ]);
     }
 
     public function report(User $user, Request $request)
     {
-        $start = Carbon::parse(($request->has('year') ? $request->year : date('Y')) . '-01-01');
+        $start = Carbon::parse(($request->has('year') ? $request->year : date('Y')) . ' -01-01');
         $end  = Carbon::parse(($request->has('year') ? $request->year : date('Y')) . '-12-31');
 
         $leaves = Application::whereBetween('start_date', [$start, $end])
@@ -35,6 +38,9 @@ class EmployeeProfileController extends Controller
                 ->where('user_id', $user->id)
                 ->get();
 
-        return view('admin.employee.leaves', compact('user', 'leaves'));
+        return view('admin.employee.leaves', [
+            'profileUser' => $user,
+            'leaves'      => $leaves
+        ]);
     }
 }

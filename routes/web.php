@@ -4,6 +4,16 @@ Route::get('/', function () {
     return redirect('login');
 });
 
+Route::get('/role', function () {
+    // $role = new \App\Role;
+    // $role->name = 'Secretary';
+    // $role->text = 'সেক্রেটারি';
+    // $role->parent_id = 1;
+    // $role->save();
+
+    // return $role;
+});
+
 // Auth Routes
 Route::group(['namespace' => 'Auth'], function () {
     Route::get('/login', 'LoginController@showLoginForm')->name('login');
@@ -52,6 +62,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth']], function () {
         Route::resource('/settings/leave', 'LeaveManagementController');
         Route::get('settings/roles', 'Roles\RolesManagementController@index')->name('roles.index');
         Route::get('settings/roles/create', 'Roles\RolesManagementController@create')->name('roles.create');
+        Route::post('settings/roles/{role}/authorizations/create', 'Roles\AuthorizationsController@store')->name('roles.authorizations.store');
+        Route::get('settings/roles/{role}/authorizations/create', 'Roles\AuthorizationsController@create')->name('roles.authorizations.create');
+        Route::get('settings/roles/{role}/authorizations/edit', 'Roles\AuthorizationsController@edit')->name('roles.authorizations.edit');
+        Route::patch('settings/roles/{role}/authorizations/edit', 'Roles\AuthorizationsController@update')->name('roles.authorizations.update');
         Route::post('settings/roles', 'Roles\RolesManagementController@store')->name('roles.store');
         Route::get('settings/roles/{role}/edit', 'Roles\RolesManagementController@edit');
         Route::patch('settings/roles/{role}', 'Roles\RolesManagementController@update')->name('roles.update');

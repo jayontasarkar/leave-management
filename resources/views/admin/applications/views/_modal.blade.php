@@ -7,9 +7,11 @@
                 </div>
                 <div class="modal-body">
                     <p>
+                        <span class="label label-info" style="padding: 4px 6px;">{{ $leave->user->name }}</span>
+                        <br><br>
                         <span class="label label-success" style="padding: 4px 6px;">ছুটির প্রকৃতি: {{ config("leave.type." . $leave->type_id) }}</span>
                         <br><br>
-                        <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ $leave->status == 1 ? 'অননুমোদিত' : 'অনুমোদিত' }}</span>
+                        <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ ! $leave->status ? 'অননুমোদিত' : 'অনুমোদিত' }}</span>
                         <br><br>
                         <strong>ছুটির আবেদনের কারণ:</strong><br>
                         {{ $leave->reason }}
@@ -38,16 +40,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($leave->approvals->where('is_read', true) as $approval)
                             <tr>
                                 <td>
-                                    <span class="logTime label label-default" title="Sunday, July 16, 2017 at 2:25pm">16 Jul at 2:25pm</span>&nbsp;&nbsp;<b>Pending -&gt; Approved</b><br> (by: Administrator)
+                                    <span class="logTime label label-default" title="Sunday, July 16, 2017 at 2:25pm">{{ $approval->updated_at->format('d M, h:i A') }}</span>&nbsp;&nbsp;<b> {{ $approval->notes }} -&gt; {{ $approval->approved == 1 ? 'approved' : 'Pending' }}</b><br> (by: {{ \App\Role::find($approval->role_id)->text }})
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <span class="logTime label label-default" title="Monday, July 24, 2017 at 5:02pm">24 Jul at 5:02pm</span>&nbsp;&nbsp;<b>Approved -&gt; Cancellation Requested</b><br>Leave cancellation request sent (by: Administrator)
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

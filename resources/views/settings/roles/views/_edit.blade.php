@@ -42,7 +42,10 @@
     </div>
     <div class="row">
         <div class="col-md-8 text-right">
-            <button class="btn btn-default" style="margin-right:8px;" type="reset">
+            <a class="btn btn-link" style="margin-right:8px;" href="{{ route('roles.authorizations.edit', [$role]) }}">
+                অনুমোদনকারী উর্ধতন পদবি পরিবর্তন
+            </a>
+            </button><button class="btn btn-default" style="margin-right:8px;" type="reset">
                 {!! config('leave.buttons.btn_reset') !!}
             </button>
             <button type="submit" class="btn btn-primary">

@@ -4,6 +4,7 @@
             <i class="fa fa-dashboard"></i> <span>প্রথম পাতা</span>
         </a>
     </li>
+    @if( ! in_array(auth()->user()->role->slug, ['dg', 'secretary']) )
     <li class="{{ Request::segment(1) == 'apply' ? 'active' : '' }}">
         <a href="{{ url('apply') }}">
             <i class="fa fa-envelope-o"></i> <span>ছুটির জন্য আবেদন</span>
@@ -14,6 +15,7 @@
             <i class="fa fa-trash-o"></i> <span>ছুটির আবেদনপত্রসমূহ</span>
         </a>
     </li>
+    @endif
     @if($user->type === 'admin')
     <li class="treeview{{ Request::segment(1) == 'user-management' ? ' active' : '' }}">
         <a href="#">

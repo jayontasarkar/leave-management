@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @include('layouts.common.title', [
-	'title' => "কর্মকর্তার নাম :  " . $user->name,
+	'title' => "কর্মকর্তার নাম :  " . $profileUser->name,
 	'link' => 'User Management &nbsp;>&nbsp; User List'
 ])
 
@@ -10,10 +10,10 @@
 	<div class="col-xs-12">
 		<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		    <li class="{{ Request::segment(3) == 'leaves' ? 'active' : '' }}">
-		    	<a id="tabEmployee" href="{{ url('employee/' . $user->id . '/leaves') }}">ছুটির আবেদনপত্রসমূহ</a>
+		    	<a id="tabEmployee" href="{{ url('employee/' . $profileUser->id . '/leaves') }}">ছুটির আবেদনপত্রসমূহ</a>
 		    </li>
 		    <li {{ Request::segment(3) == 'reports' ? 'active' : '' }}>
-		    	<a id="tabEmployee" href="{{ url('employee/' . $user->id . '/reports') }}">ছুটির রিপোর্ট</a>
+		    	<a id="tabEmployee" href="{{ url('employee/' . $profileUser->id . '/reports') }}">ছুটির রিপোর্ট</a>
 		    </li>
 		</ul>
 		<div class="tab-content rendering-content">
@@ -22,7 +22,7 @@
 				<div class="well" style="padding: 8px;">
 					<div class="row">
 						<div class="col-md-4">
-							<a href="{{ url('employee/'. $user->id .'/reports') }}" class="btn btn-primary btn-sm">
+							<a href="{{ url('employee/'. $profileUser->id .'/reports') }}" class="btn btn-primary btn-sm">
 								<i class="fa fa-search"></i>&nbsp;ছুটির রিপোর্ট
 							</a>
 						</div>
@@ -65,7 +65,7 @@
 						</div>
 					</div>
 				</div>
-				@if(count($leaves = $user->applications))
+				@if(count($leaves = $profileUser->applications))
 					@include('profile.leaves.views._applications')
 	            @else
 					<h3 class="text-center">কোনো রেজাল্ট খুঁজে পাওয়া যায় নি</h3>
@@ -74,4 +74,20 @@
 		</div>
 	</div>
 </div>
+@stop
+
+@section('script')
+	@include('layouts.common.dt-export', [
+		'heading' => "$profileUser->name এর সকল আবেদনপত্রের তালিকা",
+		'columns' => '0, 1, 2, 3, 4, 5'
+	])
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".form").on('submit', function() {
+		        $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
+		        $(this).find(":select").filter(function(){ return !this.value; }).attr("disabled", "disabled");
+		        return true;
+		    });
+		});
+	</script>
 @stop

@@ -11,6 +11,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'mobile' => $faker->unique()->phoneNumber,
         'password' => $password ?: $password = ('secret'),
         'div_br_off' => 'Head Office',
+        'join_date'  => \Carbon\Carbon::now()->subYear(),
         'remember_token' => str_random(10),
     ];
 });

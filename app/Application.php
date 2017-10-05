@@ -9,7 +9,7 @@ class Application extends Model
 {
     protected $fillable = [
         'user_id', 'type_id', 'reason', 'no_of_days', 'start_date',
-        'end_date', 'vacation_address', 'authorizer_id'
+        'end_date', 'vacation_address', 'status'
     ];
 
     /**
@@ -49,5 +49,21 @@ class Application extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Application has many Approvals.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class);
+    }
+
+    public function hasPermissionToApprove()
+    {
+        return $this->approvals()->where('role_id', auth()->user()->role_id)->where('is_visible', true)
+            ->where('approved', false)->count() ? true : false;
     }
 }

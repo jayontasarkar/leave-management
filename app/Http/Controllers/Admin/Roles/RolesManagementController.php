@@ -24,7 +24,7 @@ class RolesManagementController extends Controller
     {
         $role = Role::create($request->only('name', 'text', 'parent_id'));
 
-        return redirect()->route('roles.index')
+        return redirect()->route('roles.authorizations.create', [$role])
             ->withSuccess('নতুন পদবি সফলভাবে তৈরী করা হয়েছে |');
     }
 

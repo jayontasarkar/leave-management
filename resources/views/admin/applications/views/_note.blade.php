@@ -3,13 +3,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h5 class="modal-title">{{ $leave->reason }}</h5>
+                    <h5 class="modal-title">{{ $leave->user->name }}</h5>
                 </div>
                 <div class="modal-body">
                     <p>
+                        <span class="label label-info" style="padding: 4px 6px;">{{ $leave->reason }}</span>
+                        <br><br>
                         <span class="label label-success" style="padding: 4px 6px;">ছুটির প্রকৃতি: {{ config("leave.type." . $leave->type_id) }}</span>
                         <br><br>
-                        <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ $leave->status == 1 ? 'অননুমোদিত' : 'অনুমোদিত' }}</span>
+                        <span class="label label-primary" style="padding: 6px 6px;">চূড়ান্ত অবস্থা: {{ ! $leave->status ? 'অননুমোদিত' : 'অনুমোদিত' }}</span>
                     </p>
                     <br><br>
                     <table class="table table-condensed table-bordered table-striped" style="font-size:14px;">
@@ -36,9 +38,8 @@
                         </legend>
                         <div class="form-group" style="width: 100%; padding-left: 20px; margin-bottom: 15px;">
                             <select name="status" class="form-control" style="width: 100%;">
-                                <option value="">স্ট্যাটাস সিলেক্ট করুন</option>
-                                <option value="2">অনুমোদন করা হলো</option>
-                                <option value="3">বাতিল করা হলো</option>
+                                <option value="1">অনুমোদন করা হলো</option>
+                                <option value="2">বাতিল করা হলো</option>
                             </select>
                         </div>
                         <div class="form-group" style="width: 100%; padding-left: 20px; margin-bottom: 15px;">

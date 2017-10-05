@@ -22,7 +22,7 @@ class CreateApplicationsTable extends Migration
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->text('vacation_address')->nullable();
-            $table->integer('authorizer_id')->unsigned();
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }
