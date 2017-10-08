@@ -19,7 +19,7 @@
                 			class="img-circle" height="40" width="40"
                 		>
                 	</td>
-                        <td>{{ $user->name}}</td>
+                    <td>{{ $user->name}}</td>
                     <td> {{$user->mobile}}</td>
                     <td>{{$user->role->text}}</td>
                     <td>{{$user->div_br_off}}</td>

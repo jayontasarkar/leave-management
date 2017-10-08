@@ -54,10 +54,13 @@ class UserManagementController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user_management)
     {
-        $user = User::with('role')->find($id);
-        return view('admin.employee.show', compact('user'));
+        $user_management->load('role');
+
+        return view('admin.employee.show', [
+            'profileUser' => $user_management
+        ]);
     }
 
     /**
@@ -89,12 +92,12 @@ class UserManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  \App\User  $user_management
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(User $user_management)
     {
-        $user->delete();
+        $user_management->delete();
 
         return redirect('user-management')
             ->withSuccess('ব্যবহারকারীর তথ্য ডিলিট করা হয়েছে |');
